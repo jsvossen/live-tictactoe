@@ -22,6 +22,10 @@ var UserRegistrationComponent = (function () {
     };
     UserRegistrationComponent.prototype.login = function () {
         if (this.userName !== null) {
+            if (this.userName == '') {
+                alert('Username cannot be empty.');
+                return;
+            }
             sessionStorage.setItem('userName', this.userName);
             this.router.navigate(['chat']);
             this.socket.emit('newUser', this.userName);
@@ -35,7 +39,8 @@ var UserRegistrationComponent = (function () {
     UserRegistrationComponent = __decorate([
         core_1.Component({
             selector: 'user-registration',
-            templateUrl: 'templates/user-registration.component.html'
+            templateUrl: 'templates/user-registration.component.html',
+            styleUrls: ['templates/user-registration.component.css']
         }), 
         __metadata('design:paramtypes', [router_1.Router])
     ], UserRegistrationComponent);

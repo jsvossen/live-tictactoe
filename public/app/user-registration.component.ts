@@ -6,7 +6,8 @@ import * as io from 'socket.io';
  
 @Component({
     selector: 'user-registration',
-    templateUrl: 'templates/user-registration.component.html'
+    templateUrl: 'templates/user-registration.component.html',
+    styleUrls: ['templates/user-registration.component.css']
 })
 export class UserRegistrationComponent {
     userName = '';
@@ -20,6 +21,10 @@ export class UserRegistrationComponent {
  
     login() {
         if (this.userName !== null){
+            if (this.userName == '') {
+                alert('Username cannot be empty.');
+                return;
+            }
             sessionStorage.setItem('userName', this.userName);
             this.router.navigate(['chat']);
             this.socket.emit('newUser', this.userName);

@@ -1,15 +1,14 @@
 <div class="container">
-	<div class="col s11 registrationContainer">
+	<div class="registration-box">
  
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field">
+            	 <label for="userName">Please enter your name:</label>
                 <input [(ngModel)]="userName" id="userName" type="text" (keypress)="keypressHandler($event)">
-                <label for="userName">Please enter your name</label>
             </div>
         </div>
 	    <button (click)="login()" type="submit" 
-	    	class="btn waves-effect waves-light col s3"  
-	    	name="action" >Login</button>
+	    	class="btn" name="action" >Login</button>
 	    <div style="clear:both;"></div>
 	</div>
 </div>

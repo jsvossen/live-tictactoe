@@ -26,6 +26,11 @@ server.listen(app.get('port'));
 //routing
 app.use('/', routes);
 
+/* Handle 404. */
+app.use(function(req, res, next) {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
 //io listeners
 io.set("origins", "*:*");
  
