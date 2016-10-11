@@ -1,8 +1,8 @@
 //dependencies
 var http = require('http');
 var path = require('path');
-//var cookieParser = require('cookie-parser');
-//var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var express = require('express');
 
@@ -10,6 +10,10 @@ var express = require('express');
 var app = express();
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/node_modules/', express.static(__dirname + '/node_modules/'));
+app.use('/templates/', express.static(__dirname + '/views/templates/'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.set('views', path.join(__dirname, "views"));
 app.set('port', process.env.PORT || 3000);
 

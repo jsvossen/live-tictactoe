@@ -10,14 +10,40 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
+var forms_1 = require('@angular/forms');
+var router_1 = require('@angular/router');
 var app_component_1 = require('./app.component');
+var user_registration_component_1 = require('./user-registration.component');
+var chat_component_1 = require('./chat.component');
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
-            imports: [platform_browser_1.BrowserModule],
-            declarations: [app_component_1.AppComponent],
+            imports: [
+                platform_browser_1.BrowserModule,
+                forms_1.FormsModule,
+                router_1.RouterModule.forRoot([
+                    {
+                        path: '',
+                        redirectTo: '/chat',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'registration',
+                        component: user_registration_component_1.UserRegistrationComponent
+                    },
+                    {
+                        path: 'chat',
+                        component: chat_component_1.ChatComponent
+                    }
+                ])
+            ],
+            declarations: [
+                app_component_1.AppComponent,
+                user_registration_component_1.UserRegistrationComponent,
+                chat_component_1.ChatComponent
+            ],
             bootstrap: [app_component_1.AppComponent]
         }), 
         __metadata('design:paramtypes', [])
