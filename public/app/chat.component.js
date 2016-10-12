@@ -25,6 +25,7 @@ var ChatComponent = (function () {
         this.socket = io();
         this.socket.on('chatUpdate', function (data) {
             this.conversation.push(data);
+            this.autoScroll(this.container.nativeElement);
         }.bind(this));
     };
     ChatComponent.prototype.send = function () {
@@ -42,10 +43,20 @@ var ChatComponent = (function () {
     ChatComponent.prototype.isNewUserAlert = function (data) {
         return data.userName === '';
     };
+    ChatComponent.prototype.autoScroll = function (element) {
+        setTimeout(function () {
+            element.scrollTop = element.scrollHeight;
+        }, 10);
+    };
+    __decorate([
+        core_1.ViewChild('container'), 
+        __metadata('design:type', Object)
+    ], ChatComponent.prototype, "container", void 0);
     ChatComponent = __decorate([
         core_1.Component({
             selector: 'chat',
-            templateUrl: 'templates/chat.component.html'
+            templateUrl: 'templates/chat.component.html',
+            styleUrls: ['templates/chat.compontent.css'],
         }), 
         __metadata('design:paramtypes', [router_1.Router])
     ], ChatComponent);

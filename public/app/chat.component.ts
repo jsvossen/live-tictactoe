@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router }    from '@angular/router';
 
 import * as io from 'socket.io';
  
 @Component({
     selector: 'chat',
-    templateUrl: 'templates/chat.component.html'
+    templateUrl: 'templates/chat.component.html',
+    styleUrls:['templates/chat.compontent.css'],
+    //queries: { content: new ViewChild('container') }
 })
 export class ChatComponent {
     message = '';
     conversation = [];
     socket = null;
+
+    @ViewChild('container') container;
  
     constructor(private router: Router){}
  
@@ -21,6 +25,7 @@ export class ChatComponent {
         this.socket = io();
         this.socket.on('chatUpdate', function(data) {
             this.conversation.push(data);
+            this.autoScroll(this.container.nativeElement);
         }.bind(this));
     }
  
@@ -40,5 +45,11 @@ export class ChatComponent {
  
     isNewUserAlert(data){
         return data.userName === '';
+    }
+
+    autoScroll(element) {
+        setTimeout(function () {
+            element.scrollTop = element.scrollHeight;
+        }, 10);
     }
 }

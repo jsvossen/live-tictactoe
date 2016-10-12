@@ -1,0 +1,19 @@
+.chat-container {
+	max-width: 300px;
+	padding: 10px;
+	padding-bottom: 0;
+	border: 1px solid #999;
+}
+
+.messages {
+	margin: 0;
+	height: 200px;
+	overflow: auto;
+}
+.messages li { padding: 5px;}
+.messages li:nth-child(odd) { background: #eee; }
+
+input { width: 73%; display: inline-block;}
+button { width: 25%; display: inline-block; padding: 6px 15px;} 
+
+.user-label { font-weight: bold; }

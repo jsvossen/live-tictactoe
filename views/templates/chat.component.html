@@ -1,24 +1,18 @@
-<div class="col s12">
-	<div class="col s12 chatContainer">
-        <ul *ngFor="let msg of conversation" style="margin:0">
-            <li >
-            	<div *ngIf="!isNewUserAlert(msg)">
-	                <span  class="userLabel" >{{msg.userName}}:</span>
-	                <span>{{msg.text}}</span>
-                </div>
-            	<div *ngIf="isNewUserAlert(msg)">
-            		<span style="font-weight:bold">{{msg.text}}</span>
-	            </div>
-            </li>
-        </ul>
-	</div>
-	<div class="row">
-		<div class="col s9">
-          <input id="country" type="text"  
-          	[(ngModel)]="message" 
-          	(keypress)="keypressHandler($event)">
-        </div>
+	<div class="chat-container">
+    <ul class="messages" #container>
+        <li *ngFor="let msg of conversation">
+        	<div *ngIf="!isNewUserAlert(msg)">
+              <span class="user-label" >{{msg.userName}}:</span>
+              <span>{{msg.text}}</span>
+            </div>
+        	<div *ngIf="isNewUserAlert(msg)">
+        		<em>{{msg.text}}</em>
+          </div>
+        </li>
+      </ul>
+    <input id="message" type="text"  
+    	[(ngModel)]="message" 
+    	(keypress)="keypressHandler($event)">
 		<button (click)="send()"  type="submit" 
-			class="btn waves-effect waves-light s2"  name="action" >Send</button>
-	</div>
-</div>
+			class="btn"  name="action" >Send</button>
+  </div>
