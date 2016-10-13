@@ -42,11 +42,21 @@ io.on('connection', function (socket) {
 		io.emit('chatUpdate',data);
 	});
 	socket.on('connectedToChat', function (data) {
-		io.emit('updateUserList', data );
+		socket.uid = data.id;
+		socket.name = data.name;
+		io.emit('updateUserList', data, true );
 		socket.emit('chatUpdate',
 			{'userName':'','text':'You have entered the room'});
 		socket.broadcast.emit('chatUpdate',
-			{'userName':'','text':data+' has entered the room'});
+			{'userName':'','text':socket.name+' has entered the room'});
+	});
+
+	socket.on('disconnect', function(){
+		if ( socket.uid !== undefined ) {
+			socket.broadcast.emit('chatUpdate',
+				{'userName':'','text':socket.name+' has left the room'});
+			io.emit('updateUserList', {'id':socket.uid, 'name':socket.name}, false );
+		}
 	});
 });
 

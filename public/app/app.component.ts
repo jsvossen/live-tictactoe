@@ -6,10 +6,10 @@ import * as io from 'socket.io';
   template: '<router-outlet></router-outlet>'
 })
 export class AppComponent { 
-	socket = null;
+	// socket = null;
 
-	ngOnInit() {
-       this.socket = io();
-       this.socket.emit('alert','Hello from Angular!');
-    }
+	// ngOnInit() {
+ //       this.socket = io();
+ //       this.socket.emit('alert','Hello from Angular!');
+ //    }
 }

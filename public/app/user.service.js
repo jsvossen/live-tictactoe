@@ -16,8 +16,16 @@ var UserService = (function () {
     UserService.prototype.getUsers = function () {
         return users_1.USERS;
     };
-    UserService.prototype.addUser = function (user) {
+    UserService.prototype.add = function (user) {
         users_1.USERS.push(user);
+    };
+    UserService.prototype.delete = function (user) {
+        var index = users_1.USERS.findIndex(function (u) {
+            return u.id == user.id;
+        });
+        if (index > -1) {
+            users_1.USERS.splice(index, 1);
+        }
     };
     UserService = __decorate([
         core_1.Injectable(), 

@@ -10,8 +10,17 @@ export class UserService {
 		return USERS;
 	}
 
-	addUser(user): void {
+	add(user): void {
 		USERS.push(user);
+	}
+
+	delete(user): void {
+		var index = USERS.findIndex( function(u) {
+			return u.id == user.id;
+		});
+		if (index > -1) {
+		   USERS.splice(index, 1);
+		}
 	}
 
 }

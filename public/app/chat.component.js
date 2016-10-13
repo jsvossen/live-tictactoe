@@ -24,7 +24,7 @@ var ChatComponent = (function () {
             return;
         }
         this.socket = io();
-        this.socket.emit('connectedToChat', sessionStorage.getItem("userName"));
+        this.socket.emit('connectedToChat', { 'id': sessionStorage.getItem("uid"), 'name': sessionStorage.getItem("userName") });
         this.socket.on('chatUpdate', function (data) {
             this.conversation.push(data);
             this.autoScroll(this.container.nativeElement);

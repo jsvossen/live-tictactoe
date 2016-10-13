@@ -23,8 +23,12 @@ export class UserListComponent implements OnInit {
             return;
         }
         this.socket = io();
-        this.socket.on('updateUserList', function(data) {
-        	this.userService.addUser({'id':'test', 'name':data});
+        this.socket.on('updateUserList', function(data, toAdd) {
+            if (toAdd) {
+        	    this.userService.add(data);
+            } else {
+                this.userService.delete(data);
+            }
         }.bind(this));
 
         this.getUsers();
