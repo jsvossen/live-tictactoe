@@ -21,8 +21,10 @@ var ChatComponent = (function () {
     ChatComponent.prototype.ngOnInit = function () {
         if (sessionStorage.getItem("userName") === null) {
             this.router.navigate(['registration']);
+            return;
         }
         this.socket = io();
+        this.socket.emit('connectedToChat', sessionStorage.getItem("userName"));
         this.socket.on('chatUpdate', function (data) {
             this.conversation.push(data);
             this.autoScroll(this.container.nativeElement);

@@ -35,17 +35,16 @@ app.use(function(req, res, next) {
 io.set("origins", "*:*");
  
 io.on('connection', function (socket) {
-	console.log('user has connected'); 
 	socket.on('alert', function (data){
 		console.log(data);	
 	});
 	socket.on('newMessage', function (data) {
-		socket.emit('chatUpdate',data);
-		socket.broadcast.emit('chatUpdate',data);
+		io.emit('chatUpdate',data);
 	});
-	socket.on('newUser', function (data) {
+	socket.on('connectedToChat', function (data) {
+		io.emit('updateUserList', data );
 		socket.emit('chatUpdate',
-			{'userName':'','text':data+' has entered the room'});
+			{'userName':'','text':'You have entered the room'});
 		socket.broadcast.emit('chatUpdate',
 			{'userName':'','text':data+' has entered the room'});
 	});

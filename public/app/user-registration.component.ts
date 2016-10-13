@@ -11,6 +11,7 @@ import * as io from 'socket.io';
 })
 export class UserRegistrationComponent {
     userName = '';
+    uid = '';
     socket = null;
  
     constructor( private router: Router){}
@@ -25,9 +26,10 @@ export class UserRegistrationComponent {
                 alert('Username cannot be empty.');
                 return;
             }
+            this.uid = this.userName.toLowerCase().replace(/\W/g, '')+Math.floor((Math.random() * 1000) + 100);
             sessionStorage.setItem('userName', this.userName);
+            sessionStorage.setItem('uid', this.uid);
             this.router.navigate(['chat']);
-            this.socket.emit('newUser', this.userName);
         }
     }
  

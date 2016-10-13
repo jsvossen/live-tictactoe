@@ -13,8 +13,10 @@ var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var router_1 = require('@angular/router');
 var app_component_1 = require('./app.component');
-var user_registration_component_1 = require('./user-registration.component');
 var chat_component_1 = require('./chat.component');
+var user_list_component_1 = require('./user-list.component');
+var user_registration_component_1 = require('./user-registration.component');
+var user_service_1 = require('./user.service');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -41,8 +43,12 @@ var AppModule = (function () {
             ],
             declarations: [
                 app_component_1.AppComponent,
+                chat_component_1.ChatComponent,
                 user_registration_component_1.UserRegistrationComponent,
-                chat_component_1.ChatComponent
+                user_list_component_1.UserListComponent
+            ],
+            providers: [
+                user_service_1.UserService
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

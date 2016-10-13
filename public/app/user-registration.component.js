@@ -15,6 +15,7 @@ var UserRegistrationComponent = (function () {
     function UserRegistrationComponent(router) {
         this.router = router;
         this.userName = '';
+        this.uid = '';
         this.socket = null;
     }
     UserRegistrationComponent.prototype.ngOnInit = function () {
@@ -26,9 +27,10 @@ var UserRegistrationComponent = (function () {
                 alert('Username cannot be empty.');
                 return;
             }
+            this.uid = this.userName.toLowerCase().replace(/\W/g, '') + Math.floor((Math.random() * 1000) + 100);
             sessionStorage.setItem('userName', this.userName);
+            sessionStorage.setItem('uid', this.uid);
             this.router.navigate(['chat']);
-            this.socket.emit('newUser', this.userName);
         }
     };
     UserRegistrationComponent.prototype.keypressHandler = function (event) {

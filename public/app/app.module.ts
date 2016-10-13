@@ -4,8 +4,10 @@ import { FormsModule }   from '@angular/forms';
 import { RouterModule }  from '@angular/router';
 
 import { AppComponent }  			  from './app.component';
-import { UserRegistrationComponent }  from './user-registration.component';
 import { ChatComponent }  			from './chat.component';
+import { UserListComponent}     from './user-list.component';
+import { UserRegistrationComponent }  from './user-registration.component';
+import { UserService }                from './user.service';
 
 @NgModule({
   imports:      [ 
@@ -29,8 +31,12 @@ import { ChatComponent }  			from './chat.component';
   ],
   declarations: [ 
   	AppComponent,
-  	UserRegistrationComponent,
-  	ChatComponent 
+  	ChatComponent,
+    UserRegistrationComponent,
+    UserListComponent
+  ],
+  providers: [
+    UserService
   ],
   bootstrap:	[ AppComponent ]
 })

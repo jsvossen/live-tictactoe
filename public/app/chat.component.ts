@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router }    from '@angular/router';
 
 import * as io from 'socket.io';
@@ -7,22 +7,26 @@ import * as io from 'socket.io';
     selector: 'chat',
     templateUrl: 'templates/chat.component.html',
     styleUrls:['templates/chat.compontent.css'],
-    //queries: { content: new ViewChild('container') }
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
     message = '';
     conversation = [];
     socket = null;
 
     @ViewChild('container') container;
  
-    constructor(private router: Router){}
+    constructor(
+        private router: Router,
+    ){}
  
     ngOnInit() {
         if (sessionStorage.getItem("userName") === null){
             this.router.navigate(['registration']);
+            return;
         }
         this.socket = io();
+
+        this.socket.emit('connectedToChat', sessionStorage.getItem("userName"));
         this.socket.on('chatUpdate', function(data) {
             this.conversation.push(data);
             this.autoScroll(this.container.nativeElement);
