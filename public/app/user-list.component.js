@@ -15,10 +15,10 @@ var UserListComponent = (function () {
     function UserListComponent(userService) {
         this.userService = userService;
         this.socket = null;
-        this.init = false;
     }
     UserListComponent.prototype.ngOnInit = function () {
         this.socket = io();
+        //refresh list listener
         this.socket.on('updateUserList', function () {
             this.getUsers();
         }.bind(this));

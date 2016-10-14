@@ -24,12 +24,15 @@ var ChatComponent = (function () {
             return;
         }
         this.socket = io();
+        //new user event
         this.socket.emit('connectedToChat', { 'id': sessionStorage.getItem("uid"), 'name': sessionStorage.getItem("userName") });
+        //update chat listener
         this.socket.on('chatUpdate', function (data) {
             this.conversation.push(data);
             this.autoScroll(this.container.nativeElement);
         }.bind(this));
     };
+    //send chat message
     ChatComponent.prototype.send = function () {
         this.socket.emit('newMessage', {
             'userName': sessionStorage.getItem("userName"),
@@ -37,14 +40,17 @@ var ChatComponent = (function () {
         });
         this.message = '';
     };
+    //enter key binding
     ChatComponent.prototype.keypressHandler = function (event) {
         if (event.keyCode === 13) {
             this.send();
         }
     };
+    //system messages
     ChatComponent.prototype.isNewUserAlert = function (data) {
         return data.userName === '';
     };
+    //scroll chat window 
     ChatComponent.prototype.autoScroll = function (element) {
         setTimeout(function () {
             element.scrollTop = element.scrollHeight;

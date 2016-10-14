@@ -15,13 +15,13 @@ export class UserListComponent implements OnInit {
 
 	socket = null;
 	users: User[];
-	init = false;
 
 	constructor(private userService: UserService) { }
 
 	ngOnInit() {
         this.socket = io();
 
+        //refresh list listener
         this.socket.on('updateUserList', function() {
             this.getUsers();
         }.bind(this));

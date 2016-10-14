@@ -27,14 +27,18 @@ export class UserRegistrationComponent {
     }
  
     login() {
+        //prevent empty user name
+        this.userName = this.userName.trim();
         if (this.userName !== null){
             if (this.userName == '') {
                 alert('Username cannot be empty.');
                 return;
             }
-            //this.uid = this.userName.toLowerCase().replace(/\W/g, '')+Math.floor((Math.random() * 1000) + 100);
+
+            //store user name in session
             sessionStorage.setItem('userName', this.userName);
 
+            //add new user, store uid in session, then go to chat
             this.userService.add(this.userName)
                 .then(user => {
                 sessionStorage.setItem('uid', user._id);
@@ -43,6 +47,7 @@ export class UserRegistrationComponent {
         }
     }
  
+    //enter key binding
     keypressHandler(event) {
         if (event.keyCode  === 13){
             this.login();

@@ -13,6 +13,7 @@ export class ChatComponent implements OnInit {
     conversation = [];
     socket = null;
 
+    //chat window element
     @ViewChild('container') container;
  
     constructor(
@@ -26,13 +27,17 @@ export class ChatComponent implements OnInit {
         }
         this.socket = io();
 
+        //new user event
         this.socket.emit('connectedToChat', {'id':sessionStorage.getItem("uid"),'name':sessionStorage.getItem("userName")});
+        
+        //update chat listener
         this.socket.on('chatUpdate', function(data) {
             this.conversation.push(data);
             this.autoScroll(this.container.nativeElement);
         }.bind(this));
     }
  
+    //send chat message
     send() {
         this.socket.emit('newMessage', {
             'userName': sessionStorage.getItem("userName"),
@@ -41,16 +46,19 @@ export class ChatComponent implements OnInit {
         this.message = '';
     }
  
+    //enter key binding
     keypressHandler(event) {
         if (event.keyCode === 13){
             this.send();
         }
     } 
  
+    //system messages
     isNewUserAlert(data){
         return data.userName === '';
     }
 
+    //scroll chat window 
     autoScroll(element) {
         setTimeout(function () {
             element.scrollTop = element.scrollHeight;

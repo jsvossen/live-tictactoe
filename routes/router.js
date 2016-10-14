@@ -1,11 +1,14 @@
 'use strict';
 
+//from https://github.com/valera-rozuvan/simple-express-js-with-db
+
 var express = require('express'),
   path = require('path'),
   usersModel = require('../models/users.js'),
   router = express.Router();
 
 router.route('/users')
+  //list all users
   .get(function(req, res) {
     usersModel.find({}, function(err, users) {
       if (err) {
@@ -17,12 +20,13 @@ router.route('/users')
       res.json(users);
     });
   })
+  //create new users
   .post(function(req, res) {
-    var postData = req.body,
-      validationError = {
-        type: 'Validation Error',
-        message: ''
-      };
+    var postData = req.body;
+    // var validationError = {
+    //     type: 'Validation Error',
+    //     message: ''
+    //   };
 
     // if (!postData.username) {
     //   validationError.message = 'username is required';
@@ -51,6 +55,7 @@ router.route('/users')
   });
 
 router.route('/users/:id')
+  //update user
   .put(function(req, res) {
     usersModel.findOne({
       _id: req.params.id
@@ -94,6 +99,7 @@ router.route('/users/:id')
       });
     });
   })
+  //show user
   .get(function(req, res) {
     usersModel.findOne({
       _id: req.params.id
@@ -116,6 +122,7 @@ router.route('/users/:id')
       res.json(user);
     });
   })
+  //delete user
   .delete(function(req, res) {
     usersModel.remove({
       _id: req.params.id

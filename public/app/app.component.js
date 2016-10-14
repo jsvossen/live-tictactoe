@@ -18,10 +18,12 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
         this.socket = io();
+        //delete user from db on disconnect
         this.socket.on('deleteUser', function (uid) {
             this.userService.delete(uid);
         }.bind(this));
     };
+    //delete last user from db on window close
     AppComponent.prototype.deleteUser = function () {
         this.userService.delete(sessionStorage.getItem("uid"));
     };
