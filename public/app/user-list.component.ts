@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 @Component({
     selector: 'user-list',
     templateUrl: 'templates/user-list.component.html',
+    styleUrls: ['templates/user-list.component.css'],
     providers: [UserService]
 })
 export class UserListComponent implements OnInit {
@@ -19,23 +20,15 @@ export class UserListComponent implements OnInit {
 	constructor(private userService: UserService) { }
 
 	ngOnInit() {
-        if (sessionStorage.getItem("userName") === null){
-            return;
-        }
         this.socket = io();
-        this.socket.on('updateUserList', function(data, toAdd) {
-            if (toAdd) {
-        	    this.userService.add(data);
-            } else {
-                this.userService.delete(data);
-            }
-        }.bind(this));
 
-        this.getUsers();
+        this.socket.on('updateUserList', function() {
+            this.getUsers();
+        }.bind(this));
     }
 
 	getUsers() {
-		this.users = this.userService.getUsers();
+		this.userService.getUsers().then(users => this.users = users);
 	}
 
 }

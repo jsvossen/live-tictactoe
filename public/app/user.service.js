@@ -9,27 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var users_1 = require('./users');
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/toPromise');
 var UserService = (function () {
-    function UserService() {
+    function UserService(http) {
+        this.http = http;
+        this.usersUrl = 'api/users';
+        this.headers = new http_1.Headers({ 'Content-Type': 'application/json' });
     }
     UserService.prototype.getUsers = function () {
-        return users_1.USERS;
+        return this.http.get(this.usersUrl)
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
     };
-    UserService.prototype.add = function (user) {
-        users_1.USERS.push(user);
+    UserService.prototype.add = function (name) {
+        return this.http
+            .post(this.usersUrl, JSON.stringify({ name: name }), { headers: this.headers })
+            .toPromise()
+            .then(function (res) { return res.json(); })
+            .catch(this.handleError);
     };
-    UserService.prototype.delete = function (user) {
-        var index = users_1.USERS.findIndex(function (u) {
-            return u.id == user.id;
-        });
-        if (index > -1) {
-            users_1.USERS.splice(index, 1);
-        }
+    UserService.prototype.delete = function (id) {
+        var url = this.usersUrl + "/" + id;
+        return this.http.delete(url, { headers: this.headers })
+            .toPromise()
+            .then(function () { return null; })
+            .catch(this.handleError);
+    };
+    UserService.prototype.handleError = function (error) {
+        console.error('An error occurred', error); // for demo purposes only
+        return Promise.reject(error.message || error);
     };
     UserService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [http_1.Http])
     ], UserService);
     return UserService;
 }());

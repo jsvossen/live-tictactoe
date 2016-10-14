@@ -3,7 +3,8 @@ var http = require('http');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
+var indexRoute = require('./routes/index');
+var dbRoutes = require('./routes/router');
 var express = require('express');
 
 //server setup
@@ -11,6 +12,7 @@ var app = express();
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/node_modules/', express.static(__dirname + '/node_modules/'));
 app.use('/templates/', express.static(__dirname + '/views/templates/'));
+app.use('/data/', express.static(__dirname + '/data/'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -21,10 +23,9 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 server.listen(app.get('port'));
 
-//var io = socket.listen(server);
-
 //routing
-app.use('/', routes);
+app.use('/', indexRoute);
+app.use('/api', dbRoutes);
 
 /* Handle 404. */
 app.use(function(req, res, next) {
@@ -44,7 +45,7 @@ io.on('connection', function (socket) {
 	socket.on('connectedToChat', function (data) {
 		socket.uid = data.id;
 		socket.name = data.name;
-		io.emit('updateUserList', data, true );
+		io.emit('updateUserList');
 		socket.emit('chatUpdate',
 			{'userName':'','text':'You have entered the room'});
 		socket.broadcast.emit('chatUpdate',
@@ -52,10 +53,11 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function(){
-		if ( socket.uid !== undefined ) {
+		if ( socket.uid !== undefined && socket.uid !== null ) {
 			socket.broadcast.emit('chatUpdate',
 				{'userName':'','text':socket.name+' has left the room'});
-			io.emit('updateUserList', {'id':socket.uid, 'name':socket.name}, false );
+			socket.broadcast.emit('deleteUser', socket.uid);
+			io.emit('updateUserList');
 		}
 	});
 });

@@ -11,26 +11,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var io = require('socket.io');
+var user_service_1 = require('./user.service');
 var UserRegistrationComponent = (function () {
-    function UserRegistrationComponent(router) {
+    function UserRegistrationComponent(router, userService) {
         this.router = router;
+        this.userService = userService;
         this.userName = '';
-        this.uid = '';
         this.socket = null;
     }
     UserRegistrationComponent.prototype.ngOnInit = function () {
         this.socket = io();
     };
     UserRegistrationComponent.prototype.login = function () {
+        var _this = this;
         if (this.userName !== null) {
             if (this.userName == '') {
                 alert('Username cannot be empty.');
                 return;
             }
-            this.uid = this.userName.toLowerCase().replace(/\W/g, '') + Math.floor((Math.random() * 1000) + 100);
+            //this.uid = this.userName.toLowerCase().replace(/\W/g, '')+Math.floor((Math.random() * 1000) + 100);
             sessionStorage.setItem('userName', this.userName);
-            sessionStorage.setItem('uid', this.uid);
-            this.router.navigate(['chat']);
+            this.userService.add(this.userName)
+                .then(function (user) {
+                sessionStorage.setItem('uid', user._id);
+                _this.router.navigate(['chat']);
+            });
         }
     };
     UserRegistrationComponent.prototype.keypressHandler = function (event) {
@@ -42,9 +47,10 @@ var UserRegistrationComponent = (function () {
         core_1.Component({
             selector: 'user-registration',
             templateUrl: 'templates/user-registration.component.html',
-            styleUrls: ['templates/user-registration.component.css']
+            styleUrls: ['templates/user-registration.component.css'],
+            providers: [user_service_1.UserService]
         }), 
-        __metadata('design:paramtypes', [router_1.Router])
+        __metadata('design:paramtypes', [router_1.Router, user_service_1.UserService])
     ], UserRegistrationComponent);
     return UserRegistrationComponent;
 }());

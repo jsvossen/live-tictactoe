@@ -3,18 +3,24 @@ import { Router }     from '@angular/router';
 import { FormsModule }     from '@angular/forms';
 
 import * as io from 'socket.io';
+
+import { User } from './user';
+import { UserService } from './user.service';
  
 @Component({
     selector: 'user-registration',
     templateUrl: 'templates/user-registration.component.html',
-    styleUrls: ['templates/user-registration.component.css']
+    styleUrls: ['templates/user-registration.component.css'],
+    providers: [UserService]
 })
 export class UserRegistrationComponent {
     userName = '';
-    uid = '';
     socket = null;
  
-    constructor( private router: Router){}
+    constructor( 
+        private router: Router,
+        private userService: UserService
+    ){}
  
     ngOnInit() {
         this.socket = io();
@@ -26,10 +32,14 @@ export class UserRegistrationComponent {
                 alert('Username cannot be empty.');
                 return;
             }
-            this.uid = this.userName.toLowerCase().replace(/\W/g, '')+Math.floor((Math.random() * 1000) + 100);
+            //this.uid = this.userName.toLowerCase().replace(/\W/g, '')+Math.floor((Math.random() * 1000) + 100);
             sessionStorage.setItem('userName', this.userName);
-            sessionStorage.setItem('uid', this.uid);
-            this.router.navigate(['chat']);
+
+            this.userService.add(this.userName)
+                .then(user => {
+                sessionStorage.setItem('uid', user._id);
+                this.router.navigate(['chat']);
+            });            
         }
     }
  

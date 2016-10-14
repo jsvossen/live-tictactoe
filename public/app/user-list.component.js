@@ -18,27 +18,20 @@ var UserListComponent = (function () {
         this.init = false;
     }
     UserListComponent.prototype.ngOnInit = function () {
-        if (sessionStorage.getItem("userName") === null) {
-            return;
-        }
         this.socket = io();
-        this.socket.on('updateUserList', function (data, toAdd) {
-            if (toAdd) {
-                this.userService.add(data);
-            }
-            else {
-                this.userService.delete(data);
-            }
+        this.socket.on('updateUserList', function () {
+            this.getUsers();
         }.bind(this));
-        this.getUsers();
     };
     UserListComponent.prototype.getUsers = function () {
-        this.users = this.userService.getUsers();
+        var _this = this;
+        this.userService.getUsers().then(function (users) { return _this.users = users; });
     };
     UserListComponent = __decorate([
         core_1.Component({
             selector: 'user-list',
             templateUrl: 'templates/user-list.component.html',
+            styleUrls: ['templates/user-list.component.css'],
             providers: [user_service_1.UserService]
         }), 
         __metadata('design:paramtypes', [user_service_1.UserService])

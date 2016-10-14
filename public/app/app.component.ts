@@ -1,15 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import * as io from 'socket.io';
+
+import { User } from './user';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'my-app',
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  providers: [UserService]
 })
 export class AppComponent { 
-	// socket = null;
+	socket = null;
 
-	// ngOnInit() {
- //       this.socket = io();
- //       this.socket.emit('alert','Hello from Angular!');
- //    }
+	constructor(private userService: UserService) { }
+
+	ngOnInit() {
+       this.socket = io();
+       this.socket.on('deleteUser', function(uid) {
+            this.userService.delete(uid);
+        }.bind(this));
+    }
+
+    @HostListener('window:beforeunload')
+  	deleteUser() {
+  		this.userService.delete(sessionStorage.getItem("uid"));
+  	}
 }
