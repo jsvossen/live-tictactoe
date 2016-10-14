@@ -15,9 +15,9 @@ var io = require('socket.io');
 var TicTacToeComponent = (function () {
     function TicTacToeComponent() {
         this.socket = null;
-        this.board = [["", "", ""],
-            ["", "", ""],
-            ["", "", ""]];
+        this.board = [["x", "x", "x"],
+            ["x", "x", "x"],
+            ["x", "x", "x"]];
         this.mark = "X";
         this.waiting = false;
         this.inProgress = true;
@@ -31,6 +31,7 @@ var TicTacToeComponent = (function () {
                 this.inProgress = false;
             }
         }.bind(this));
+        this.socket.on('resetGame', this.resetGame.bind(this));
     };
     TicTacToeComponent.prototype.placeMark = function (x, y) {
         if (this.waiting) {
@@ -54,6 +55,9 @@ var TicTacToeComponent = (function () {
             }
         }
         return true;
+    };
+    TicTacToeComponent.prototype.emitReset = function () {
+        this.socket.emit('emitReset');
     };
     TicTacToeComponent.prototype.resetGame = function () {
         this.board = [["", "", ""],

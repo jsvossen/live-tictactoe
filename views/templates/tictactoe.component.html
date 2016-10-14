@@ -12,5 +12,5 @@
 	<p *ngIf="waiting">Waiting for other player...</p>
 	<p *ngIf="!waiting && inProgress">It's your move...<p>
 	<p *ngIf="boardFull()">Game Over!</p>
-	<button *ngIf="!inProgress" (click)="resetGame()">Reset Game</button>
+	<button *ngIf="!inProgress" (click)="emitReset()">Reset Game</button>
 </div>

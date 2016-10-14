@@ -33,6 +33,8 @@ export class TicTacToeComponent implements OnInit {
             this.board[coord[1]][coord[0]] = mark;
             if (this.boardFull()) { this.inProgress = false; }
         }.bind(this));
+
+        this.socket.on('resetGame', this.resetGame.bind(this));
     }
 
     placeMark(x,y) {
@@ -54,6 +56,10 @@ export class TicTacToeComponent implements OnInit {
             }
         }
         return true;
+    }
+
+    emitReset() {
+        this.socket.emit('emitReset');
     }
 
     resetGame() {

@@ -66,6 +66,10 @@ io.on('connection', function (socket) {
 		io.emit('processGameTurn', mark, coord);
 	});
 
+	socket.on('emitReset', function (){
+		io.emit('resetGame');
+	});
+
 	//disconnect and remove user
 	socket.on('disconnect', function(){
 		if ( socket.uid !== undefined && socket.uid !== null ) {
