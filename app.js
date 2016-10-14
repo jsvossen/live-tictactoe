@@ -61,6 +61,11 @@ io.on('connection', function (socket) {
 			{'userName':'','text':socket.name+' has entered the room'});
 	});
 
+	//game listener
+	socket.on('placeMark', function (mark, coord){
+		io.emit('processGameTurn', mark, coord);
+	});
+
 	//disconnect and remove user
 	socket.on('disconnect', function(){
 		if ( socket.uid !== undefined && socket.uid !== null ) {
