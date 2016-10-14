@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "tsc && concurrently \"node app.js\" \"npm run tsc:w\"",
+    "lite": "lite-server",
+    "postinstall": "typings install",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "typings": "typings"
   },
   "license": "ISC",
   "dependencies": {
@@ -29,7 +34,13 @@
     "systemjs": "0.19.39",
     "zone.js": "^0.6.25"
   },
-  "engines": {
+  "devDependencies": {
+    "concurrently": "^3.0.0",
+    "lite-server": "^2.2.2",
+    "typescript": "^2.0.3",
+    "typings": "^1.4.0"
+  },
+    "engines": {
     "node": "4.5.0"
   }
 }

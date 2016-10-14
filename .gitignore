@@ -3,4 +3,7 @@
 npm-debug.log
 .DS_Store
 /*.env
-/db
+
+#ignore package versions
+package-heroku.json
+packate-dev.json
