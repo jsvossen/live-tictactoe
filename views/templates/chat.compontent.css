@@ -1,5 +1,10 @@
+.left-col {
+	float: left;
+	margin-right: 50px;
+}
+
 .chat-container {
-	max-width: 300px;
+	width: 300px;
 	padding: 10px;
 	padding-bottom: 0;
 	border: 1px solid #999;

@@ -1,0 +1,9 @@
+<div class="board" [ngClass]="{waiting: waiting}">
+	<div *ngFor="let row of board; let y = index" class="row">
+		<div *ngFor="let box of row; let x = index" 
+			class="cell" [class.filled]="box !=''"
+			(click)="placeMark(x,y)">
+			{{box}}
+		</div>
+	</div>
+</div>

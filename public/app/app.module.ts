@@ -6,6 +6,7 @@ import { RouterModule }  from '@angular/router';
 
 import { AppComponent }  			  from './app.component';
 import { ChatComponent }  			from './chat.component';
+import { TicTacToeComponent }   from './tictactoe.component';
 import { UserListComponent}     from './user-list.component';
 import { UserRegistrationComponent }  from './user-registration.component';
 import { UserService }                from './user.service';
@@ -34,6 +35,7 @@ import { UserService }                from './user.service';
   declarations: [ 
   	AppComponent,
   	ChatComponent,
+    TicTacToeComponent,
     UserRegistrationComponent,
     UserListComponent
   ],

@@ -15,6 +15,7 @@ var http_1 = require('@angular/http');
 var router_1 = require('@angular/router');
 var app_component_1 = require('./app.component');
 var chat_component_1 = require('./chat.component');
+var tictactoe_component_1 = require('./tictactoe.component');
 var user_list_component_1 = require('./user-list.component');
 var user_registration_component_1 = require('./user-registration.component');
 var user_service_1 = require('./user.service');
@@ -46,6 +47,7 @@ var AppModule = (function () {
             declarations: [
                 app_component_1.AppComponent,
                 chat_component_1.ChatComponent,
+                tictactoe_component_1.TicTacToeComponent,
                 user_registration_component_1.UserRegistrationComponent,
                 user_list_component_1.UserListComponent
             ],
