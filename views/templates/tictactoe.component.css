@@ -1,6 +1,7 @@
 .board {
 	float: left;
 	text-align: center;
+	margin-right: 50px;
 }
 
 .row { clear: both;}
@@ -16,3 +17,5 @@
 }
 
 .waiting .cell, .cell.filled { cursor: not-allowed !important;}
+
+.stats p { margin-bottom: 10px; }

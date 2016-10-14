@@ -20,12 +20,16 @@ var TicTacToeComponent = (function () {
             ["", "", ""]];
         this.mark = "X";
         this.waiting = false;
+        this.inProgress = true;
     }
     //constructor(private userService: UserService) { }
     TicTacToeComponent.prototype.ngOnInit = function () {
         this.socket = io();
         this.socket.on('processGameTurn', function (mark, coord) {
             this.board[coord[1]][coord[0]] = mark;
+            if (this.boardFull()) {
+                this.inProgress = false;
+            }
         }.bind(this));
     };
     TicTacToeComponent.prototype.placeMark = function (x, y) {
@@ -38,6 +42,24 @@ var TicTacToeComponent = (function () {
             return;
         }
         this.socket.emit('placeMark', this.mark, [x, y]);
+    };
+    TicTacToeComponent.prototype.boardFull = function () {
+        for (var _i = 0, _a = this.board; _i < _a.length; _i++) {
+            var row = _a[_i];
+            for (var _b = 0, row_1 = row; _b < row_1.length; _b++) {
+                var box = row_1[_b];
+                if (box == '') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+    TicTacToeComponent.prototype.resetGame = function () {
+        this.board = [["", "", ""],
+            ["", "", ""],
+            ["", "", ""]];
+        this.inProgress = true;
     };
     TicTacToeComponent = __decorate([
         core_1.Component({

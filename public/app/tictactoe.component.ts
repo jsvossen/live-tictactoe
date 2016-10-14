@@ -22,6 +22,8 @@ export class TicTacToeComponent implements OnInit {
 
     waiting = false;
 
+    inProgress = true;
+
 	//constructor(private userService: UserService) { }
 
 	ngOnInit() {
@@ -29,6 +31,7 @@ export class TicTacToeComponent implements OnInit {
 
         this.socket.on('processGameTurn', function(mark, coord) {
             this.board[coord[1]][coord[0]] = mark;
+            if (this.boardFull()) { this.inProgress = false; }
         }.bind(this));
     }
 
@@ -42,6 +45,22 @@ export class TicTacToeComponent implements OnInit {
             return;
         }
         this.socket.emit('placeMark', this.mark, [x,y]);
+    }
+
+    boardFull() {
+        for (let row of this.board) {
+            for (let box of row) {
+                if (box == '') { return false; }
+            }
+        }
+        return true;
+    }
+
+    resetGame() {
+        this.board = [["","",""],
+                     ["","",""],
+                     ["","",""]];
+        this.inProgress = true;
     }
 
 }
