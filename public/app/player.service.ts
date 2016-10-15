@@ -23,18 +23,18 @@ export class PlayerService {
 
 	private headers = new Headers({'Content-Type': 'application/json'});
 
-	updateByUid(player: Player): Promise<Player> {
-		const url = `${this.playersUrl}/user/${player.uid}`;
+	updateByUid(uid, properties): Promise<Player> {
+		const url = `${this.playersUrl}/user/${uid}`;
 		return this.http
-			.post(url, JSON.stringify(player), { headers: this.headers })
+			.post(url, JSON.stringify(properties), { headers: this.headers })
 			.toPromise()
 			.then(res => res.json())
 			.catch(this.handleError);
 	}
-	updateByMark(player:Player): Promise<Player> {
-		const url = `${this.playersUrl}/mark/${player.mark}`;
+	updateByMark(mark, properties): Promise<Player> {
+		const url = `${this.playersUrl}/mark/${mark}`;
 		return this.http
-			.post(url, JSON.stringify({uid:player.uid}), { headers: this.headers })
+			.post(url, JSON.stringify(properties), { headers: this.headers })
 			.toPromise()
 			.then(res => res.json())
 			.catch(this.handleError);

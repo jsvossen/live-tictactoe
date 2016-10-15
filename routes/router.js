@@ -160,7 +160,7 @@ router.route('/players')
 //find player by user id
 router.route('/players/user/:uid')
   //update player
-  .put(function(req, res) {
+  .post(function(req, res) {
     playersModel.findOne({
       uid: req.params.uid
     }, function(err, player) {

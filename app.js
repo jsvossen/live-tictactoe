@@ -31,9 +31,9 @@ app.use('/', indexRoute);
 app.use('/api', dbRoutes);
 
 /* Handle 404. */
-app.use(function(req, res, next) {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
+// app.use(function(req, res, next) {
+//   res.sendFile(path.join(__dirname, 'views', 'index.html'));
+// });
 
 //io listeners
 io.set("origins", "*:*");

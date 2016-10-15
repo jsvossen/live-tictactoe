@@ -24,18 +24,18 @@ var PlayerService = (function () {
             .then(function (response) { return response.json(); })
             .catch(this.handleError);
     };
-    PlayerService.prototype.updateByUid = function (player) {
-        var url = this.playersUrl + "/user/" + player.uid;
+    PlayerService.prototype.updateByUid = function (uid, properties) {
+        var url = this.playersUrl + "/user/" + uid;
         return this.http
-            .post(url, JSON.stringify(player), { headers: this.headers })
+            .post(url, JSON.stringify(properties), { headers: this.headers })
             .toPromise()
             .then(function (res) { return res.json(); })
             .catch(this.handleError);
     };
-    PlayerService.prototype.updateByMark = function (player) {
-        var url = this.playersUrl + "/mark/" + player.mark;
+    PlayerService.prototype.updateByMark = function (mark, properties) {
+        var url = this.playersUrl + "/mark/" + mark;
         return this.http
-            .post(url, JSON.stringify({ uid: player.uid }), { headers: this.headers })
+            .post(url, JSON.stringify(properties), { headers: this.headers })
             .toPromise()
             .then(function (res) { return res.json(); })
             .catch(this.handleError);

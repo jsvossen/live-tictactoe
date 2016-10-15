@@ -27,6 +27,9 @@ var TicTacToeComponent = (function () {
         this.socket = io();
         this.socket.on('processGameTurn', function (mark, coord) {
             this.board[coord[1]][coord[0]] = mark;
+            if (this.player) {
+                this.switchActive();
+            }
             if (this.boardFull()) {
                 this.inProgress = false;
             }
@@ -45,7 +48,7 @@ var TicTacToeComponent = (function () {
                 for (var _i = 0, players_1 = players; _i < players_1.length; _i++) {
                     var p = players_1[_i];
                     if (p.uid == "" && !_self.player) {
-                        _self.playerService.updateByMark({ mark: p.mark, uid: sessionStorage.getItem('uid') })
+                        _self.playerService.updateByMark(p.mark, { uid: sessionStorage.getItem('uid') })
                             .then(function () {
                             _self.socket.emit('emitStartReq');
                         });
@@ -90,10 +93,18 @@ var TicTacToeComponent = (function () {
     TicTacToeComponent.prototype.startGame = function () {
         var _self = this;
         this.getPlayers(function () {
-            console.log(_self.player, _self.otherPlayer);
             if (_self.player && _self.otherPlayer && _self.player.active) {
                 _self.waiting = false;
             }
+        });
+    };
+    TicTacToeComponent.prototype.switchActive = function () {
+        var _this = this;
+        this.playerService.updateByUid(this.player.uid, { active: !this.player.active })
+            .then(function () {
+            _this.player.active = !_this.player.active;
+            _this.otherPlayer.active = !_this.otherPlayer.active;
+            _this.player.active ? _this.waiting = false : _this.waiting = true;
         });
     };
     TicTacToeComponent.prototype.getPlayers = function (callback) {
