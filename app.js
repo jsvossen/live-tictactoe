@@ -71,6 +71,10 @@ io.on('connection', function (socket) {
 		io.emit('resetGame');
 	});
 
+	socket.on('emitStartReq', function (){
+		io.emit('startGame');
+	});
+
 	//disconnect and remove user
 	socket.on('disconnect', function(){
 		if ( socket.uid !== undefined && socket.uid !== null ) {

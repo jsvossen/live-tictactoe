@@ -14,17 +14,15 @@ import { PlayerService } from './player.service';
 export class TicTacToeComponent implements OnInit {
 
 	socket = null;
-    players: Player[];
-    player: Player;
+
+    player: Player = null;
+    otherPlayer: Player = null;
 
     board = [["","",""],
              ["","",""],
              ["","",""]];
 
-    mark = "";
-
     waiting = true;
-
     inProgress = true;
 
     constructor( private playerService: PlayerService){}
@@ -39,21 +37,24 @@ export class TicTacToeComponent implements OnInit {
 
         this.socket.on('resetGame', this.resetGame.bind(this));
 
+        this.socket.on('startGame', this.startGame.bind(this));
+
         this.socket.on('addPlayer', function(uid){
-            this.playerService.getPlayers().then(players => {
-                for (let player of players) {
-                    if (player.uid == sessionStorage.getItem('uid')) { return; }
-                    if (player.uid == "") {
-                        this.playerService.updateByMark({mark: player.mark, uid: sessionStorage.getItem('uid')})
-                            .then((data) => {
-                                this.player = data.player
-                                this.mark = data.player.mark;
-                                this.startGame();
+            var _self = this
+            this.getPlayers(function(players){
+                if (players[0].uid != "" && players[1].uid != "") { 
+                    if (!_self.player) { alert("game is full"); } 
+                    return; 
+                }
+                for (let p of players) {
+                    if (p.uid == "" && !_self.player) {
+                        _self.playerService.updateByMark({mark: p.mark, uid: sessionStorage.getItem('uid')})
+                            .then(() => {
+                                _self.socket.emit('emitStartReq');
                             });
                         return;
                     }
                 }
-                
             });
         }.bind(this));
     }
@@ -67,7 +68,7 @@ export class TicTacToeComponent implements OnInit {
             alert("That squre is not empty.");
             return;
         }
-        this.socket.emit('placeMark', this.mark, [x,y]);
+        this.socket.emit('placeMark', this.player.mark, [x,y]);
     }
 
     boardFull() {
@@ -91,18 +92,27 @@ export class TicTacToeComponent implements OnInit {
     }
 
     startGame() {
-        this.playerService.getPlayers().then(players => {
-            this.players = players;
-            if (this.players[0].uid != "" && this.players[1].uid != "" && this.player.active) {
-            this.waiting = false;
-            return;
-        }
+        var _self = this
+        this.getPlayers(function(){
+            console.log(_self.player, _self.otherPlayer);
+            if (_self.player && _self.otherPlayer && _self.player.active) {
+                _self.waiting = false;
+            }
         });
     }
 
-    getPlayers() {
+    getPlayers(callback) {
         this.playerService.getPlayers().then(players => {
-            this.players = players;
+            for (let player of players) {
+                if (player.uid == '') { break; }
+                if (player.uid == sessionStorage.getItem('uid') ) {
+                    this.player = player;
+                }
+                else if ( player.uid != sessionStorage.getItem('uid') ) {
+                    this.otherPlayer = player;
+                }
+            }
+            callback(players);
         });
     }
 }

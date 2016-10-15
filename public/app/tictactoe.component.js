@@ -15,10 +15,11 @@ var TicTacToeComponent = (function () {
     function TicTacToeComponent(playerService) {
         this.playerService = playerService;
         this.socket = null;
+        this.player = null;
+        this.otherPlayer = null;
         this.board = [["", "", ""],
             ["", "", ""],
             ["", "", ""]];
-        this.mark = "";
         this.waiting = true;
         this.inProgress = true;
     }
@@ -31,20 +32,22 @@ var TicTacToeComponent = (function () {
             }
         }.bind(this));
         this.socket.on('resetGame', this.resetGame.bind(this));
+        this.socket.on('startGame', this.startGame.bind(this));
         this.socket.on('addPlayer', function (uid) {
-            var _this = this;
-            this.playerService.getPlayers().then(function (players) {
-                for (var _i = 0, players_1 = players; _i < players_1.length; _i++) {
-                    var player = players_1[_i];
-                    if (player.uid == sessionStorage.getItem('uid')) {
-                        return;
+            var _self = this;
+            this.getPlayers(function (players) {
+                if (players[0].uid != "" && players[1].uid != "") {
+                    if (!_self.player) {
+                        alert("game is full");
                     }
-                    if (player.uid == "") {
-                        _this.playerService.updateByMark({ mark: player.mark, uid: sessionStorage.getItem('uid') })
-                            .then(function (data) {
-                            _this.player = data.player;
-                            _this.mark = data.player.mark;
-                            _this.startGame();
+                    return;
+                }
+                for (var _i = 0, players_1 = players; _i < players_1.length; _i++) {
+                    var p = players_1[_i];
+                    if (p.uid == "" && !_self.player) {
+                        _self.playerService.updateByMark({ mark: p.mark, uid: sessionStorage.getItem('uid') })
+                            .then(function () {
+                            _self.socket.emit('emitStartReq');
                         });
                         return;
                     }
@@ -61,7 +64,7 @@ var TicTacToeComponent = (function () {
             alert("That squre is not empty.");
             return;
         }
-        this.socket.emit('placeMark', this.mark, [x, y]);
+        this.socket.emit('placeMark', this.player.mark, [x, y]);
     };
     TicTacToeComponent.prototype.boardFull = function () {
         for (var _i = 0, _a = this.board; _i < _a.length; _i++) {
@@ -85,19 +88,30 @@ var TicTacToeComponent = (function () {
         this.inProgress = true;
     };
     TicTacToeComponent.prototype.startGame = function () {
-        var _this = this;
-        this.playerService.getPlayers().then(function (players) {
-            _this.players = players;
-            if (_this.players[0].uid != "" && _this.players[1].uid != "" && _this.player.active) {
-                _this.waiting = false;
-                return;
+        var _self = this;
+        this.getPlayers(function () {
+            console.log(_self.player, _self.otherPlayer);
+            if (_self.player && _self.otherPlayer && _self.player.active) {
+                _self.waiting = false;
             }
         });
     };
-    TicTacToeComponent.prototype.getPlayers = function () {
+    TicTacToeComponent.prototype.getPlayers = function (callback) {
         var _this = this;
         this.playerService.getPlayers().then(function (players) {
-            _this.players = players;
+            for (var _i = 0, players_2 = players; _i < players_2.length; _i++) {
+                var player = players_2[_i];
+                if (player.uid == '') {
+                    break;
+                }
+                if (player.uid == sessionStorage.getItem('uid')) {
+                    _this.player = player;
+                }
+                else if (player.uid != sessionStorage.getItem('uid')) {
+                    _this.otherPlayer = player;
+                }
+            }
+            callback(players);
         });
     };
     TicTacToeComponent = __decorate([
