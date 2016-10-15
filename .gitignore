@@ -6,7 +6,7 @@ npm-debug.log
 
 #ignore package versions
 package-heroku.json
-packate-dev.json
+package-dev.json
 
 #push blank users.db
 /db/users.db
