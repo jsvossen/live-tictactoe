@@ -23,7 +23,7 @@ export class TicTacToeComponent implements OnInit {
 
     mark = "";
 
-    waiting = false;
+    waiting = true;
 
     inProgress = true;
 
@@ -48,17 +48,12 @@ export class TicTacToeComponent implements OnInit {
                             .then((data) => {
                                 this.player = data.player
                                 this.mark = data.player.mark;
-                                console.log(this.mark,this.player);
-                                this.getPlayers();
+                                this.startGame();
                             });
                         return;
                     }
                 }
-                // if (this.players.uid[0] != "" && this.players.uid[1] != "" && this.player.active) {
-                //     this.waiting = false;
-                //     return;
-                // }
-                // alert("Game is full, but you can spectate.");
+                
             });
         }.bind(this));
     }
@@ -95,10 +90,19 @@ export class TicTacToeComponent implements OnInit {
         this.inProgress = true;
     }
 
+    startGame() {
+        this.playerService.getPlayers().then(players => {
+            this.players = players;
+            if (this.players[0].uid != "" && this.players[1].uid != "" && this.player.active) {
+            this.waiting = false;
+            return;
+        }
+        });
+    }
+
     getPlayers() {
         this.playerService.getPlayers().then(players => {
             this.players = players;
         });
     }
-
 }

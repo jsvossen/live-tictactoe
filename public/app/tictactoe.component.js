@@ -19,7 +19,7 @@ var TicTacToeComponent = (function () {
             ["", "", ""],
             ["", "", ""]];
         this.mark = "";
-        this.waiting = false;
+        this.waiting = true;
         this.inProgress = true;
     }
     TicTacToeComponent.prototype.ngOnInit = function () {
@@ -44,17 +44,11 @@ var TicTacToeComponent = (function () {
                             .then(function (data) {
                             _this.player = data.player;
                             _this.mark = data.player.mark;
-                            console.log(_this.mark, _this.player);
-                            _this.getPlayers();
+                            _this.startGame();
                         });
                         return;
                     }
                 }
-                // if (this.players.uid[0] != "" && this.players.uid[1] != "" && this.player.active) {
-                //     this.waiting = false;
-                //     return;
-                // }
-                // alert("Game is full, but you can spectate.");
             });
         }.bind(this));
     };
@@ -89,6 +83,16 @@ var TicTacToeComponent = (function () {
             ["", "", ""],
             ["", "", ""]];
         this.inProgress = true;
+    };
+    TicTacToeComponent.prototype.startGame = function () {
+        var _this = this;
+        this.playerService.getPlayers().then(function (players) {
+            _this.players = players;
+            if (_this.players[0].uid != "" && _this.players[1].uid != "" && _this.player.active) {
+                _this.waiting = false;
+                return;
+            }
+        });
     };
     TicTacToeComponent.prototype.getPlayers = function () {
         var _this = this;
