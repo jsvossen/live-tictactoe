@@ -89,6 +89,8 @@ var TicTacToeComponent = (function () {
             ["", "", ""],
             ["", "", ""]];
         this.inProgress = true;
+        this.waiting = true;
+        this.socket.emit('emitStartReq');
     };
     TicTacToeComponent.prototype.startGame = function () {
         var _self = this;
@@ -113,6 +115,9 @@ var TicTacToeComponent = (function () {
             for (var _i = 0, players_2 = players; _i < players_2.length; _i++) {
                 var player = players_2[_i];
                 if (player.uid == '') {
+                    if (_this.player) {
+                        _this.otherPlayer = null;
+                    }
                     break;
                 }
                 if (player.uid == sessionStorage.getItem('uid')) {

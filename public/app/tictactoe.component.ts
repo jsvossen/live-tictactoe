@@ -90,6 +90,8 @@ export class TicTacToeComponent implements OnInit {
                      ["","",""],
                      ["","",""]];
         this.inProgress = true;
+        this.waiting = true;
+        this.socket.emit('emitStartReq');
     }
 
     startGame() {
@@ -113,7 +115,10 @@ export class TicTacToeComponent implements OnInit {
     getPlayers(callback) {
         this.playerService.getPlayers().then(players => {
             for (let player of players) {
-                if (player.uid == '') { break; }
+                if (player.uid == '') {
+                    if (this.player) { this.otherPlayer = null; }
+                    break; 
+                }
                 if (player.uid == sessionStorage.getItem('uid') ) {
                     this.player = player;
                 }

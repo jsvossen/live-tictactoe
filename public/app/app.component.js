@@ -11,21 +11,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var io = require('socket.io');
 var user_service_1 = require('./user.service');
+var player_service_1 = require('./player.service');
 var AppComponent = (function () {
-    function AppComponent(userService) {
+    function AppComponent(userService, playerService) {
         this.userService = userService;
+        this.playerService = playerService;
         this.socket = null;
     }
     AppComponent.prototype.ngOnInit = function () {
         this.socket = io();
         //delete user from db on disconnect
         this.socket.on('deleteUser', function (uid) {
+            var _this = this;
             this.userService.delete(uid);
+            this.playerService.updateByUid(uid, { uid: "" })
+                .then(function () {
+                _this.socket.emit('emitReset');
+            });
         }.bind(this));
     };
     //delete last user from db on window close
     AppComponent.prototype.deleteUser = function () {
         this.userService.delete(sessionStorage.getItem("uid"));
+        this.playerService.updateByUid(sessionStorage.getItem("uid"), { uid: "" });
     };
     __decorate([
         core_1.HostListener('window:beforeunload'), 
@@ -37,9 +45,9 @@ var AppComponent = (function () {
         core_1.Component({
             selector: 'my-app',
             template: '<router-outlet></router-outlet>',
-            providers: [user_service_1.UserService]
+            providers: [user_service_1.UserService, player_service_1.PlayerService]
         }), 
-        __metadata('design:paramtypes', [user_service_1.UserService])
+        __metadata('design:paramtypes', [user_service_1.UserService, player_service_1.PlayerService])
     ], AppComponent);
     return AppComponent;
 }());
