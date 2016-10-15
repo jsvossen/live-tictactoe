@@ -30,23 +30,29 @@ export class TicTacToeComponent implements OnInit {
 	ngOnInit() {
         this.socket = io();
 
+        //main game loop: place mark, check for game over, switch turns
         this.socket.on('processGameTurn', function(mark, coord) {
             this.board[coord[1]][coord[0]] = mark;
             if (this.player) { this.switchActive(); }
             if (this.boardFull()) { this.inProgress = false; }
         }.bind(this));
 
+        //reset game on req
         this.socket.on('resetGame', this.resetGame.bind(this));
 
+        //start game on req
         this.socket.on('startGame', this.startGame.bind(this));
 
+        //add player to game on connection
         this.socket.on('addPlayer', function(uid){
             var _self = this
             this.getPlayers(function(players){
+                //limit to two players
                 if (players[0].uid != "" && players[1].uid != "") { 
                     if (!_self.player) { alert("game is full"); } 
                     return; 
                 }
+                //assign user to empty player slot and emit global start req
                 for (let p of players) {
                     if (p.uid == "" && !_self.player) {
                         _self.playerService.updateByMark(p.mark, {uid: sessionStorage.getItem('uid')})
@@ -60,6 +66,7 @@ export class TicTacToeComponent implements OnInit {
         }.bind(this));
     }
 
+    //place player mark on empty square only if it's their turn
     placeMark(x,y) {
         if (this.waiting) {
             alert("Please wait for your turn.");
@@ -72,6 +79,7 @@ export class TicTacToeComponent implements OnInit {
         this.socket.emit('placeMark', this.player.mark, [x,y]);
     }
 
+    //check for game over
     boardFull() {
         for (let row of this.board) {
             for (let box of row) {
@@ -81,10 +89,12 @@ export class TicTacToeComponent implements OnInit {
         return true;
     }
 
+    //emit global reset req
     emitReset() {
         this.socket.emit('emitReset');
     }
 
+    //reset game and emit global start req
     resetGame() {
         this.board = [["","",""],
                      ["","",""],
@@ -94,6 +104,7 @@ export class TicTacToeComponent implements OnInit {
         this.socket.emit('emitStartReq');
     }
 
+    //start game if both players exist and current player is active
     startGame() {
         var _self = this
         this.getPlayers(function(){
@@ -103,6 +114,7 @@ export class TicTacToeComponent implements OnInit {
         });
     }
 
+    //switch active player
     switchActive() {
         this.playerService.updateByUid(this.player.uid, {active: !this.player.active})
                 .then(() => {
@@ -112,6 +124,7 @@ export class TicTacToeComponent implements OnInit {
                 });
     }
 
+    //get players from db and refresh local info; callback for additional player mods
     getPlayers(callback) {
         this.playerService.getPlayers().then(players => {
             for (let player of players) {

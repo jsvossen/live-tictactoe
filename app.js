@@ -31,9 +31,9 @@ app.use('/', indexRoute);
 app.use('/api', dbRoutes);
 
 /* Handle 404. */
-// app.use(function(req, res, next) {
-//   res.sendFile(path.join(__dirname, 'views', 'index.html'));
-// });
+app.use(function(req, res, next) {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
 
 //io listeners
 io.set("origins", "*:*");
@@ -57,20 +57,22 @@ io.on('connection', function (socket) {
 		io.emit('updateUserList');
 		io.emit('addPlayer');
 		socket.emit('chatUpdate',
-			{'userName':'','text':'You have entered the room'});
+			{'userName':'','text':'You have joined the game'});
 		socket.broadcast.emit('chatUpdate',
-			{'userName':'','text':socket.name+' has entered the room'});
+			{'userName':'','text':socket.name+' has joined the game'});
 	});
 
-	//game listener
+	//main game loop listener
 	socket.on('placeMark', function (mark, coord){
 		io.emit('processGameTurn', mark, coord);
 	});
 
+	//reset game listener
 	socket.on('emitReset', function (){
 		io.emit('resetGame');
 	});
 
+	//start game listener
 	socket.on('emitStartReq', function (){
 		io.emit('startGame');
 	});
