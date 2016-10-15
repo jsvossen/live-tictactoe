@@ -5,7 +5,10 @@
 var express = require('express'),
   path = require('path'),
   usersModel = require('../models/users.js'),
+  playersModel = require('../models/players.js'),
   router = express.Router();
+
+/*USER ROUTES (crud)*/
 
 router.route('/users')
   //list all users
@@ -135,6 +138,164 @@ router.route('/users/:id')
         type: 'success',
         message: 'Successfully deleted user with id "' + req.params.id + '".'
       });
+    });
+  });
+
+/*PLAYER ROUTES (read/update only)*/
+
+router.route('/players')
+  //list all players
+  .get(function(req, res) {
+    playersModel.find({}, function(err, players) {
+      if (err) {
+        res.send(err);
+
+        return;
+      }
+
+      res.json(players);
+    });
+  });
+
+//find player by user id
+router.route('/players/user/:uid')
+  //update player
+  .put(function(req, res) {
+    playersModel.findOne({
+      uid: req.params.uid
+    }, function(err, player) {
+      var prop;
+
+      if (err) {
+        res.send(err);
+
+        return;
+      }
+
+      if (player === null) {
+        res.json({
+          type: 'error',
+          message: 'Did not find a user with "id" of "' + req.params.uid + '".'
+        });
+
+        return;
+      }
+
+      for (prop in req.body) {
+        if (prop !== '_id') {
+          player[prop] = req.body[prop];
+        }
+      }
+
+      playersModel.update({
+        _id: player._id
+      }, player, {}, function(err, numReplaced) {
+        if (err) {
+          res.send(err);
+
+          return;
+        }
+
+        res.json({
+          type: 'success',
+          message: 'Replaced ' + numReplaced + ' user(s).',
+          player: player
+        });
+      });
+    });
+  })
+  //show player
+  .get(function(req, res) {
+    playersModel.findOne({
+      uid: req.params.uid
+    }, function(err, player) {
+      if (err) {
+        res.send(err);
+        console.log(err);
+        return;
+      }
+
+      if (player === null) {
+        res.json({
+          type: 'error',
+          message: 'Did not find a user with "id" of "' + req.params.uid + '".'
+        });
+
+        return;
+      }
+
+      res.json(player);
+    });
+  });
+
+  //find player by mark
+router.route('/players/mark/:mark')
+  //update player
+  .post(function(req, res) {
+    playersModel.findOne({
+      mark: req.params.mark
+    }, function(err, player) {
+      var prop;
+
+      if (err) {
+        res.send(err);
+
+        return;
+      }
+
+      if (player === null) {
+        res.json({
+          type: 'error',
+          message: 'Did not find a user with "mark" of "' + req.params.mark + '".'
+        });
+
+        return;
+      }
+
+      for (prop in req.body) {
+        if (prop !== '_id') {
+          player[prop] = req.body[prop];
+        }
+      }
+
+      playersModel.update({
+        _id: player._id
+      }, player, {}, function(err, numReplaced) {
+        if (err) {
+          res.send(err);
+          console.log(err);
+          return;
+        }
+
+        res.json({
+          type: 'success',
+          message: 'Replaced ' + numReplaced + ' user(s).',
+          player: player
+        });
+      });
+    });
+  })
+  //show player
+  .get(function(req, res) {
+    playersModel.findOne({
+      mark: req.params.mark
+    }, function(err, player) {
+      if (err) {
+        res.send(err);
+
+        return;
+      }
+
+      if (player === null) {
+        res.json({
+          type: 'error',
+          message: 'Did not find a user with "mark" of "' + req.params.mark + '".'
+        });
+
+        return;
+      }
+
+      res.json(player);
     });
   });
 

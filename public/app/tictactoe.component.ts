@@ -2,29 +2,32 @@ import { Component, OnInit } from '@angular/core';
 
 import * as io from 'socket.io';
 
-// import { User } from './user';
-// import { UserService } from './user.service';
+import { Player } from './player';
+import { PlayerService } from './player.service';
  
 @Component({
     selector: 'tic-tac-toe',
     templateUrl: 'templates/tictactoe.component.html',
-    styleUrls: ['templates/tictactoe.component.css']
+    styleUrls: ['templates/tictactoe.component.css'],
+    providers: [PlayerService]
 })
 export class TicTacToeComponent implements OnInit {
 
 	socket = null;
+    players: Player[];
+    player: Player;
 
     board = [["","",""],
              ["","",""],
              ["","",""]];
 
-    mark = "X";
+    mark = "";
 
     waiting = false;
 
     inProgress = true;
 
-	//constructor(private userService: UserService) { }
+    constructor( private playerService: PlayerService){}
 
 	ngOnInit() {
         this.socket = io();
@@ -35,6 +38,29 @@ export class TicTacToeComponent implements OnInit {
         }.bind(this));
 
         this.socket.on('resetGame', this.resetGame.bind(this));
+
+        this.socket.on('addPlayer', function(uid){
+            this.playerService.getPlayers().then(players => {
+                for (let player of players) {
+                    if (player.uid == sessionStorage.getItem('uid')) { return; }
+                    if (player.uid == "") {
+                        this.playerService.updateByMark({mark: player.mark, uid: sessionStorage.getItem('uid')})
+                            .then((data) => {
+                                this.player = data.player
+                                this.mark = data.player.mark;
+                                console.log(this.mark,this.player);
+                                this.getPlayers();
+                            });
+                        return;
+                    }
+                }
+                // if (this.players.uid[0] != "" && this.players.uid[1] != "" && this.player.active) {
+                //     this.waiting = false;
+                //     return;
+                // }
+                // alert("Game is full, but you can spectate.");
+            });
+        }.bind(this));
     }
 
     placeMark(x,y) {
@@ -67,6 +93,12 @@ export class TicTacToeComponent implements OnInit {
                      ["","",""],
                      ["","",""]];
         this.inProgress = true;
+    }
+
+    getPlayers() {
+        this.playerService.getPlayers().then(players => {
+            this.players = players;
+        });
     }
 
 }

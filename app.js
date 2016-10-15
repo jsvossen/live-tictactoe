@@ -55,6 +55,7 @@ io.on('connection', function (socket) {
 		socket.uid = data.id;
 		socket.name = data.name;
 		io.emit('updateUserList');
+		io.emit('addPlayer');
 		socket.emit('chatUpdate',
 			{'userName':'','text':'You have entered the room'});
 		socket.broadcast.emit('chatUpdate',
